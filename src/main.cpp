@@ -37,6 +37,7 @@ int main() {
   /**
    * TODO: Initialize the pid variable.
    */
+  pid.Init(0.20, 0.0001, 1.35);
 
   h.onMessage([&pid](uWS::WebSocket<uWS::SERVER> ws, char *data, size_t length, 
                      uWS::OpCode opCode) {
@@ -63,6 +64,19 @@ int main() {
            * NOTE: Feel free to play around with the throttle and speed.
            *   Maybe use another PID controller to control the speed!
            */
+          double tolerance = 0.1;
+          if(pid.twid_flag){
+            std::vector<double> p = pid.Twiddle(tolerance, cte);
+            std::cout << "p[0] : " << p[0] << "     p[1] : " << p[1] << "     p[2] : " << p[2] << std::endl;
+          }
+          else{
+            std::cout << "twid flag is " << pid.twid_flag << std::endl;
+          }
+          
+          pid.UpdateError(cte);
+          steer_value = pid.TotalError();
+          steer_value = fmax(steer_value, -1.0);
+          steer_value = fmin(steer_value, 1.0);
           
           // DEBUG
           std::cout << "CTE: " << cte << " Steering Value: " << steer_value 

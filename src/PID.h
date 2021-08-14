@@ -1,6 +1,11 @@
 #ifndef PID_H
 #define PID_H
 
+#include <iostream>
+#include <cmath>
+#include <vector>
+#include <numeric>
+
 class PID {
  public:
   /**
@@ -31,6 +36,17 @@ class PID {
    */
   double TotalError();
 
+  /**
+   * search the best PID-gains.
+   * @output The total PID-gains
+   */
+  std::vector<double> Twiddle(double &tolerance, double &cte);
+
+  /**
+   * flag if execute the widdle() function
+   */ 
+  bool twid_flag;
+
  private:
   /**
    * PID Errors
@@ -45,6 +61,7 @@ class PID {
   double Kp;
   double Ki;
   double Kd;
+
 };
 
 #endif  // PID_H
